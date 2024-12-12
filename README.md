@@ -145,3 +145,10 @@ If additional functionality is required, here are some ideas:
 
 This library is lightweight and efficient for most games. Use it as a foundation for your needs and customize it as necessary. Happy coding!
 
+
+## Credits
+
+- Zombie sprite sheet used for testing was created by [Kenney](https://kenney.nl/).
+
+
+
