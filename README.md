@@ -149,6 +149,8 @@ This library is lightweight and efficient for most games. Use it as a foundation
 ## Credits
 
 - Zombie sprite sheet used for testing was created by [Kenney](https://kenney.nl/).
+- The zombie sprite sheet included in this project is licensed under Creative Commons Zero (CC0). More details: http://creativecommons.org/publicdomain/zero/1.0/
+
 
 
 
