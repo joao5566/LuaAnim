@@ -1,25 +1,27 @@
-Animation = require("animation")
+local Animation = require("animation")
 local anim
-function love.load()
-    
-    zombSheet = love.graphics.newImage("zombie_tilesheet.png")
 
-    anim = Animation.new(zombSheet,80,110,{
-        idle = {1,24},
-        walk = {10,11},
-        climb ={6,7},
-    },0.2)
-    
+function love.load()
+    -- Carregar o spritesheet
+    local zombSheet = love.graphics.newImage("zombie_tilesheet.png")
+
+    -- Criar uma instância da animação
+    anim = Animation.new(zombSheet, 80, 110, {
+        idle = {{linha = 1 , frames = {1}},{linha = 2, frames = {4}}},
+        walk = {{linha = 2, frames = {1, 2}}},
+        climb = {{linha = 3, frames = {6, 7}}}
+    }, 0.5)
 end
 
 function love.update(dt)
+    -- Atualiza a animação
     anim:update(dt)
 
-    
-
-    anim:setAnimation("walk")
+    -- Definir a animação ativa, altere conforme necessário
+    anim:setAnimation("idle")
 end
 
 function love.draw()
-    anim:draw(100,100,1)
+    -- Desenha a animação na posição (100, 100)
+    anim:draw(100, 100, 1)
 end
