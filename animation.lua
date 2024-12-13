@@ -67,11 +67,20 @@ end
 function Animation:draw(x, y, scaleX, scaleY)
     scaleX = scaleX or 1
     scaleY = scaleY or 1
+
     if self.currentAnimation then
+        -- Obtém o quadro da animação atual
         local quad = self.animations[self.currentAnimation][self.currentFrame]
-        love.graphics.draw(self.image, quad, x, y, 0, scaleX, scaleY)
+        
+        -- Ajuste do offset para centralizar o quadro em relação ao corpo
+        local offsetX = -self.frameWidth / 2
+        local offsetY = -self.frameHeight / 2
+
+        -- Desenha o quadro com o offset calculado
+        love.graphics.draw(self.image, quad, x + offsetX, y + offsetY, 0, scaleX, scaleY)
     end
 end
+
 
 function Animation:setAnimation(name)
     if self.animations[name] and self.currentAnimation ~= name then
