@@ -5,6 +5,7 @@ This simple Lua library facilitates the use of sprite sheet animations in Love2D
 ## Key Features
 
 - Automatic generation of quads for animations based on indices.
+- Support for selecting specific rows of frames in the sprite sheet.
 - Animation control (switching animations, updating frames).
 - Rendering of animated frames on screen.
 - Simplicity for adding new functionalities as needed.
@@ -29,8 +30,10 @@ Use the `Animation.new` method to create a new animation.
 - `image`: The sprite sheet (image loaded with `love.graphics.newImage`).
 - `frameWidth`: Width of each frame in the sprite sheet.
 - `frameHeight`: Height of each frame in the sprite sheet.
-- `animations`: A table where each key is the animation name and the values are the frame indices.
+- `animations`: A table where each key is the animation name and the values define the frames and rows.
 - `frameDuration`: Time (in seconds) each frame is displayed.
+
+You can now specify frames in a particular row using `{startFrame, endFrame, rowNumber}`. For example, `{1, 4, 2}` selects frames 1 to 4 on the second row.
 
 **Example:**
 
@@ -39,8 +42,8 @@ function love.load()
     local zombSheet = love.graphics.newImage("zombie_tilesheet.png")
 
     anim = Animation.new(zombSheet, 80, 110, {
-        idle = {1, 2, 3, 4},
-        walk = {5, 6, 7, 8}
+        idle = { {1, 4, 1} }, -- Frames 1-4, Row 1
+        walk = { {1, 4, 2} }  -- Frames 1-4, Row 2
     }, 0.2)
 end
 ```
@@ -88,6 +91,8 @@ end
 ### Animation.new(image, frameWidth, frameHeight, animations, frameDuration)
 Creates a new animation instance.
 
+- **New Feature:** You can now specify animations by row using `{startFrame, endFrame, rowNumber}` format.
+
 ### anim:update(dt)
 Updates the current frame of the animation based on elapsed time.
 
@@ -110,8 +115,8 @@ function love.load()
     zombSheet = love.graphics.newImage("zombie_tilesheet.png")
 
     anim = Animation.new(zombSheet, 80, 110, {
-        idle = {1, 2, 3, 4},
-        walk = {5, 6, 7, 8}
+        idle = { {1, 4, 1} }, -- Frames 1-4, Row 1
+        walk = { {1, 4, 2} }  -- Frames 1-4, Row 2
     }, 0.2)
 end
 
@@ -145,12 +150,10 @@ If additional functionality is required, here are some ideas:
 
 This library is lightweight and efficient for most games. Use it as a foundation for your needs and customize it as necessary. Happy coding!
 
+---
 
 ## Credits
 
 - Zombie sprite sheet used for testing was created by [Kenney](https://kenney.nl/).
 - The zombie sprite sheet included in this project is licensed under Creative Commons Zero (CC0). More details: http://creativecommons.org/publicdomain/zero/1.0/
-
-
-
 
