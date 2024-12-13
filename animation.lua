@@ -14,19 +14,36 @@ function Animation.new(image, frameWidth, frameHeight, animations, frameDuration
     }
 
     -- Calcula os quads para cada animação com base nos índices fornecidos
-    for name, indices in pairs(animations) do
+    for name, frames in pairs(animations) do
         obj.animations[name] = {}
-        for _, index in ipairs(indices) do
-            local cols = math.floor(image:getWidth() / frameWidth)
-            local x = ((index - 1) % cols) * frameWidth
-            local y = math.floor((index - 1) / cols) * frameHeight
 
-            local quad = love.graphics.newQuad(
-                x, y, 
-                frameWidth, frameHeight, 
-                image:getWidth(), image:getHeight()
-            )
-            table.insert(obj.animations[name], quad)
+        for _, frameData in ipairs(frames) do
+            if type(frameData) == "number" then
+                -- Caso padrão (índices absolutos)
+                local cols = math.floor(image:getWidth() / frameWidth)
+                local x = ((frameData - 1) % cols) * frameWidth
+                local y = math.floor((frameData - 1) / cols) * frameHeight
+
+                local quad = love.graphics.newQuad(
+                    x, y,
+                    frameWidth, frameHeight,
+                    image:getWidth(), image:getHeight()
+                )
+                table.insert(obj.animations[name], quad)
+            elseif type(frameData) == "table" and frameData.linha and frameData.frames then
+                -- Caso com linha e quadros especificados
+                local y = (frameData.linha - 1) * frameHeight
+                for _, frame in ipairs(frameData.frames) do
+                    local x = (frame - 1) * frameWidth
+
+                    local quad = love.graphics.newQuad(
+                        x, y,
+                        frameWidth, frameHeight,
+                        image:getWidth(), image:getHeight()
+                    )
+                    table.insert(obj.animations[name], quad)
+                end
+            end
         end
     end
 
@@ -65,4 +82,3 @@ function Animation:setAnimation(name)
 end
 
 return Animation
-
