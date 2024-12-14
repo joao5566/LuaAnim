@@ -1,21 +1,25 @@
 local Animation = {}
 Animation.__index = Animation
 
-function Animation.new(image, frameWidth, frameHeight, animations, frameDuration)
+function Animation.new(image, frameWidth, frameHeight, animations, defaultFrameDuration)
     local obj = {
         image = image,
         frameWidth = frameWidth,
         frameHeight = frameHeight,
-        animations = {}, -- Tabelas com os quads de cada animação
-        frameDuration = frameDuration,
+        animations = {}, -- Tabelas com os quads e duração de cada animação
+        defaultFrameDuration = defaultFrameDuration,
         currentAnimation = nil, -- Animação ativa
         elapsedTime = 0,
         currentFrame = 1,
+        frameDurations = {}, -- Duração personalizada para cada animação
     }
 
     -- Calcula os quads para cada animação com base nos índices fornecidos
-    for name, frames in pairs(animations) do
+    for name, data in pairs(animations) do
         obj.animations[name] = {}
+        local frames = data.frames
+        local frameDuration = data.frameDuration or defaultFrameDuration -- Usa duração específica ou padrão
+        obj.frameDurations[name] = frameDuration
 
         for _, frameData in ipairs(frames) do
             if type(frameData) == "number" then
@@ -54,8 +58,9 @@ end
 function Animation:update(dt)
     if self.currentAnimation then
         self.elapsedTime = self.elapsedTime + dt
-        if self.elapsedTime >= self.frameDuration then
-            self.elapsedTime = self.elapsedTime - self.frameDuration
+        local frameDuration = self.frameDurations[self.currentAnimation] -- Obtém a duração da animação atual
+        if self.elapsedTime >= frameDuration then
+            self.elapsedTime = self.elapsedTime - frameDuration
             self.currentFrame = self.currentFrame + 1
             if self.currentFrame > #self.animations[self.currentAnimation] then
                 self.currentFrame = 1
@@ -80,7 +85,6 @@ function Animation:draw(x, y, scaleX, scaleY)
         love.graphics.draw(self.image, quad, x + offsetX, y + offsetY, 0, scaleX, scaleY)
     end
 end
-
 
 function Animation:setAnimation(name)
     if self.animations[name] and self.currentAnimation ~= name then
