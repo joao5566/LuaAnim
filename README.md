@@ -8,6 +8,7 @@ This simple Lua library facilitates the use of sprite sheet animations in Love2D
 - Support for selecting specific rows of frames in the sprite sheet.
 - Animation control (switching animations, updating frames).
 - Rendering of animated frames on screen.
+- Centering animation frames on the body for alignment.
 - Simplicity for adding new functionalities as needed.
 
 ---
@@ -33,7 +34,7 @@ Use the `Animation.new` method to create a new animation.
 - `animations`: A table where each key is the animation name and the values define the frames and rows.
 - `frameDuration`: Time (in seconds) each frame is displayed.
 
-You can now specify frames in a particular row using `{startFrame, endFrame, rowNumber}`. For example, `{1, 4, 2}` selects frames 1 to 4 on the second row.
+You can specify animations using individual frame indices or by selecting specific rows and frames using `{linha = rowNumber, frames = {startFrame, ..., endFrame}}`.
 
 **Example:**
 
@@ -42,8 +43,9 @@ function love.load()
     local zombSheet = love.graphics.newImage("zombie_tilesheet.png")
 
     anim = Animation.new(zombSheet, 80, 110, {
-        idle = { {1, 4, 1} }, -- Frames 1-4, Row 1
-        walk = { {1, 4, 2} }  -- Frames 1-4, Row 2
+        idle = { {linha = 1, frames = {1, 2, 3, 4}} }, -- Frames 1-4, Row 1
+        walk = { {linha = 2, frames = {1, 2, 3, 4}} }, -- Frames 1-4, Row 2
+        climb = { {linha = 3, frames = {1, 2}} }       -- Frames 1-2, Row 3
     }, 0.2)
 end
 ```
@@ -91,13 +93,13 @@ end
 ### Animation.new(image, frameWidth, frameHeight, animations, frameDuration)
 Creates a new animation instance.
 
-- **New Feature:** You can now specify animations by row using `{startFrame, endFrame, rowNumber}` format.
+- **New Feature:** You can now specify animations by row using `{linha = rowNumber, frames = {startFrame, ..., endFrame}}` format.
 
 ### anim:update(dt)
 Updates the current frame of the animation based on elapsed time.
 
 ### anim:draw(x, y, scaleX, scaleY)
-Renders the animation on the screen.
+Renders the animation on the screen, automatically centering the frame relative to the body.
 
 ### anim:setAnimation(name)
 Switches to a specified animation by name.
@@ -115,8 +117,9 @@ function love.load()
     zombSheet = love.graphics.newImage("zombie_tilesheet.png")
 
     anim = Animation.new(zombSheet, 80, 110, {
-        idle = { {1, 4, 1} }, -- Frames 1-4, Row 1
-        walk = { {1, 4, 2} }  -- Frames 1-4, Row 2
+        idle = { {linha = 1, frames = {1, 2, 3, 4}} }, -- Frames 1-4, Row 1
+        walk = { {linha = 2, frames = {1, 2, 3, 4}} }, -- Frames 1-4, Row 2
+        climb = { {linha = 3, frames = {1, 2}} }       -- Frames 1-2, Row 3
     }, 0.2)
 end
 
@@ -156,4 +159,3 @@ This library is lightweight and efficient for most games. Use it as a foundation
 
 - Zombie sprite sheet used for testing was created by [Kenney](https://kenney.nl/).
 - The zombie sprite sheet included in this project is licensed under Creative Commons Zero (CC0). More details: http://creativecommons.org/publicdomain/zero/1.0/
-
