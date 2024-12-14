@@ -7,9 +7,18 @@ function love.load()
 
     -- Criar uma instância da animação
     anim = Animation.new(zombSheet, 80, 110, {
-        idle = {{linha = 1 , frames = {1}},{linha = 2, frames = {4}}},
-        walk = {{linha = 2, frames = {1, 2}}},
-        climb = {{linha = 3, frames = {6, 7}}}
+        idle = {
+            frames = { {linha = 1, frames = {1}}, {linha = 2, frames = {4}} },
+            frameDuration = 0.5
+        },
+        walk = {
+            frames = { {linha = 2, frames = {1, 2}} },
+            frameDuration = 0.3
+        },
+        climb = {
+            frames = { {linha = 3, frames = {6, 7}} },
+            frameDuration = 0.4
+        }
     }, 0.5)
 end
 
