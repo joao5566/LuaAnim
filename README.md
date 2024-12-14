@@ -6,6 +6,7 @@ This simple Lua library facilitates the use of sprite sheet animations in Love2D
 
 - Automatic generation of quads for animations based on indices.
 - Support for selecting specific rows of frames in the sprite sheet.
+- Per-animation frame duration control.
 - Animation control (switching animations, updating frames).
 - Rendering of animated frames on screen.
 - Centering animation frames on the body for alignment.
@@ -32,9 +33,9 @@ Use the `Animation.new` method to create a new animation.
 - `frameWidth`: Width of each frame in the sprite sheet.
 - `frameHeight`: Height of each frame in the sprite sheet.
 - `animations`: A table where each key is the animation name and the values define the frames and rows.
-- `frameDuration`: Time (in seconds) each frame is displayed.
+- `defaultFrameDuration`: Default time (in seconds) each frame is displayed if no specific duration is provided for an animation.
 
-You can specify animations using individual frame indices or by selecting specific rows and frames using `{linha = rowNumber, frames = {startFrame, ..., endFrame}}`.
+You can specify animations using individual frame indices or by selecting specific rows and frames using `{linha = rowNumber, frames = {startFrame, ..., endFrame}}`. Additionally, you can provide a custom `frameDuration` for each animation.
 
 **Example:**
 
@@ -43,10 +44,19 @@ function love.load()
     local zombSheet = love.graphics.newImage("zombie_tilesheet.png")
 
     anim = Animation.new(zombSheet, 80, 110, {
-        idle = { {linha = 1, frames = {1, 2, 3, 4}} }, -- Frames 1-4, Row 1
-        walk = { {linha = 2, frames = {1, 2, 3, 4}} }, -- Frames 1-4, Row 2
-        climb = { {linha = 3, frames = {1, 2}} }       -- Frames 1-2, Row 3
-    }, 0.2)
+        idle = {
+            frames = { {linha = 1, frames = {1, 2, 3}}, {linha = 2, frames = {1, 2}} }, -- Combines frames from two rows
+            frameDuration = 0.5 -- Custom frame duration for "idle"
+        },
+        walk = {
+            frames = { {linha = 3, frames = {1, 2, 3, 4}} }, -- Frames 1-4, Row 3
+            frameDuration = 0.2 -- Custom frame duration for "walk"
+        },
+        climb = {
+            frames = { {linha = 4, frames = {1, 2}} },       -- Frames 1-2, Row 4
+            frameDuration = 0.3 -- Custom frame duration for "climb"
+        }
+    }, 0.3) -- Default frame duration if not specified
 end
 ```
 
@@ -62,6 +72,8 @@ function love.update(dt)
 
     if love.keyboard.isDown("right") then
         anim:setAnimation("walk")
+    elseif love.keyboard.isDown("up") then
+        anim:setAnimation("climb")
     else
         anim:setAnimation("idle")
     end
@@ -90,10 +102,11 @@ end
 
 ## Available Methods
 
-### Animation.new(image, frameWidth, frameHeight, animations, frameDuration)
+### Animation.new(image, frameWidth, frameHeight, animations, defaultFrameDuration)
 Creates a new animation instance.
 
 - **New Feature:** You can now specify animations by row using `{linha = rowNumber, frames = {startFrame, ..., endFrame}}` format.
+- **New Feature:** Each animation can have a custom `frameDuration`.
 
 ### anim:update(dt)
 Updates the current frame of the animation based on elapsed time.
@@ -117,10 +130,19 @@ function love.load()
     zombSheet = love.graphics.newImage("zombie_tilesheet.png")
 
     anim = Animation.new(zombSheet, 80, 110, {
-        idle = { {linha = 1, frames = {1, 2, 3, 4}} }, -- Frames 1-4, Row 1
-        walk = { {linha = 2, frames = {1, 2, 3, 4}} }, -- Frames 1-4, Row 2
-        climb = { {linha = 3, frames = {1, 2}} }       -- Frames 1-2, Row 3
-    }, 0.2)
+        idle = {
+            frames = { {linha = 1, frames = {1, 2, 3}}, {linha = 2, frames = {1, 2}} }, -- Combines frames from two rows
+            frameDuration = 0.5
+        },
+        walk = {
+            frames = { {linha = 3, frames = {1, 2, 3, 4}} }, -- Frames 1-4, Row 3
+            frameDuration = 0.2
+        },
+        climb = {
+            frames = { {linha = 4, frames = {1, 2}} },       -- Frames 1-2, Row 4
+            frameDuration = 0.3
+        }
+    }, 0.3)
 end
 
 function love.update(dt)
@@ -128,6 +150,8 @@ function love.update(dt)
 
     if love.keyboard.isDown("right") then
         anim:setAnimation("walk")
+    elseif love.keyboard.isDown("up") then
+        anim:setAnimation("climb")
     else
         anim:setAnimation("idle")
     end
@@ -145,9 +169,9 @@ end
 If additional functionality is required, here are some ideas:
 
 1. **Support for Callbacks:** Add events triggered at the end of an animation.
-2. **Different Animation Speeds:** Allow each animation to have a distinct frame duration.
-3. **Reverse Playback:** Add support for playing animations backward.
-4. **Pause/Resume:** Implement methods to pause and resume animations.
+2. **Reverse Playback:** Add support for playing animations backward.
+3. **Pause/Resume:** Implement methods to pause and resume animations.
+4. **Animation Blending:** Support for smooth transitions between animations.
 
 ---
 
